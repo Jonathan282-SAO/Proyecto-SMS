@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Campaña - Admin Mensajería Masiva</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+  <div id="container">
+    <!-- Header -->
+    <header id="main-header">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/admin_logo.png') }}" alt="Admin Logo">
+        <span>Mensajería Masiva</span>
+      </div>
+      <div class="user-info">
+        <span>Bienvenido, {{ admin_user }}</span>
+        <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <ul>
+        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li class="active"><a href="{{ url_for('admin_campaigns') }}">Campañas</a></li>
+        <li><a href="{{ url_for('admin_users') }}">Usuarios</a></li>
+        <li><a href="{{ url_for('admin_reports') }}">Reportes</a></li>
+        <li><a href="{{ url_for('admin_settings') }}">Configuraciones</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main id="content">
+      <h1>Editar Campaña</h1>
+      <form action="{{ url_for('edit_campaign', campaign_id=campaign.id) }}" method="POST">
+        <label for="campaign_name">Nombre de Campaña:</label>
+        <input type="text" id="campaign_name" name="campaign_name" value="{{ campaign.name }}" required>
+        
+        <label for="campaign_message">Mensaje:</label>
+        <textarea id="campaign_message" name="campaign_message" required>{{ campaign.message }}</textarea>
+        
+        <button type="submit" class="btn-submit">Guardar Cambios</button>
+      </form>
+    </main>
+  </div>
+  
+  <!-- Footer -->
+  <footer id="main-footer">
+    &copy; {{ year }} - Mensajería Masiva
+  </footer>
+</body>
+</html>

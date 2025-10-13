@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Administración - Mensajería Masiva</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='images/admin_logo.png') }}">
+      Admin Mensajería Masiva
+    </div>
+    <div class="header-right">
+      <span>Bienvenido, {{ admin_user }}</span>
+      <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+    </div>
+  </div>
+
+  <!-- Sidebar (Menú de Navegación) -->
+  <div class="sidebar">
+    <ul>
+      <li class="active"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('admin_campaigns') }}">Campañas</a></li>
+      <li><a href="{{ url_for('admin_users') }}">Usuarios</a></li>
+      <li><a href="{{ url_for('admin_reports') }}">Reportes</a></li>
+      <li><a href="{{ url_for('admin_settings') }}">Configuraciones</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="dashboard-card">
+      <h2>Resumen General</h2>
+      <p>Aquí se muestran estadísticas de envíos, campañas activas, mensajes enviados y éxito en la mensajería masiva.</p>
+      <!-- Aquí se pueden agregar gráficos, tablas o cualquier información dinámica -->
+    </div>
+    <div class="dashboard-card">
+      <h2>Campañas Recientes</h2>
+      <p>Listado de las campañas lanzadas recientemente y sus respectivos resultados.</p>
+      <!-- Agregar contenido dinámico -->
+    </div>
+    <!-- Agrega más secciones o tarjetas según las necesidades de tu aplicación -->
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; {{ year }} - Admin Mensajería Masiva. Todos los derechos reservados.
+  </div>
+</body>
+</html>

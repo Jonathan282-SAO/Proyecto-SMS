@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Campañas - Admin Mensajería Masiva</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+  <div id="container">
+    <!-- Header -->
+    <header id="main-header">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/admin_logo.png') }}" alt="Admin Logo">
+        <span>Mensajería Masiva</span>
+      </div>
+      <div class="user-info">
+        <span>Bienvenido, {{ admin_user }}</span>
+        <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <ul>
+        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li class="active"><a href="{{ url_for('admin_campaigns') }}">Campañas</a></li>
+        <li><a href="{{ url_for('admin_users') }}">Usuarios</a></li>
+        <li><a href="{{ url_for('admin_reports') }}">Reportes</a></li>
+        <li><a href="{{ url_for('admin_settings') }}">Configuraciones</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main id="content">
+      <h1>Gestión de Campañas</h1>
+      
+      <!-- Formulario para crear campaña -->
+      <section class="new-campaign">
+        <h2>Nueva Campaña</h2>
+        <form action="{{ url_for('admin_campaigns') }}" method="POST">
+          <label for="campaign_name">Nombre de Campaña:</label>
+          <input type="text" id="campaign_name" name="campaign_name" placeholder="Ingresar nombre" required>
+          
+          <label for="campaign_message">Mensaje:</label>
+          <textarea id="campaign_message" name="campaign_message" placeholder="Ingrese el contenido" required></textarea>
+          
+          <button type="submit" class="btn-submit">Crear Campaña</button>
+        </form>
+      </section>
+      
+      <!-- Lista de campañas existentes -->
+      <section class="campaign-list">
+        <h2>Campañas Existentes</h2>
+        {% if campaigns %}
+          <table class="campaigns-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Mensaje</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for campaign in campaigns %}
+              <tr>
+                <td>{{ campaign.id }}</td>
+                <td>{{ campaign.name }}</td>
+                <td>{{ campaign.message }}</td>
+                <td>{{ campaign.date }}</td>
+                <td>
+                  <a href="{{ url_for('edit_campaign', campaign_id=campaign.id) }}" class="action-link">Editar</a> |
+                <form action="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" method="POST" style="display:inline;">
+    <button type="submit" class="action-link" onclick="return confirm('¿Estás seguro de eliminar esta campaña?');">Eliminar</button>
+</form>
+
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>No existen campañas registradas.</p>
+        {% endif %}
+      </section>
+    </main>
+  </div>
+  
+  <!-- Footer -->
+  <footer id="main-footer">
+    &copy; {{ year }} - Mensajería Masiva
+  </footer>
+</body>
+</html>

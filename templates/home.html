@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Envios{% endblock %}
+
+{% block content %}
+  <!-- Banner superior -->
+  <div class="banner">
+    <div class="banner-left">
+      <span class="icono-baner"></span>
+      <span class="notificaciones">Notificaciones Masivas</span>
+    </div>
+    <div class="banner-right">
+      <span class="welcome-text">Bienvenido(a)</span>
+      <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
+      <div class="user-dropdown" id="userDropdown">
+        <ul>
+          <li><a href="{{ url_for('change_password') }}">Cambiar contraseña</a></li>
+          <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Barra de menú con búsqueda -->
+  <div class="menu-bar">
+    <ul class="menu-list">
+      <li><a href="{{ url_for('home') }}">Inicio</a></li>
+      <li><a href="{{ url_for('grupos') }}">Grupos</a></li>
+      <li><a href="{{ url_for('notificaciones') }}">Notificaciones</a></li>
+      <li><a href="{{ url_for('redactar') }}">Redactar</a></li>
+      <li class="active"><a href="{{ url_for('ayuda') }}">Ayuda</a></li>
+      <!-- Apartado de búsqueda: se posiciona a la derecha -->
+      <li class="menu-search">
+        <form onsubmit="return false;">
+          <input id="searchInput" type="text" placeholder="Buscar">
+        </form>
+      </li>
+    </ul>
+  </div>
+  
+  <!-- Panel de Envios con mensajes de prueba -->
+  <div class="panel-envios">
+    <div class="panel-header">
+      <span class="icono-envios"></span>
+      <span class="panel-title">ENVIOS</span>
+    </div>
+    <div class="panel-content">
+      <ul id="enviosList" class="mensajes-list">
+         <li>Envio 1: ¡Mensaje de prueba 1!</li>
+         <li>Envio 2: Este es un mensaje importante.</li>
+         <li>Envio 3: Notificación de prueba.</li>
+         <li>Envio 4: Actualización del sistema.</li>
+         <li>Envio 5: Recordatorio de reunión a las 3 PM.</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Script de búsqueda en tiempo real para Envios -->
+  <script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const filter = this.value.toLowerCase();
+      const messagesList = document.querySelectorAll('#enviosList li');
+      messagesList.forEach(function(message) {
+         if(message.textContent.toLowerCase().indexOf(filter) > -1) {
+            message.style.display = '';
+         } else {
+            message.style.display = 'none';
+         }
+      });
+    });
+
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById("userDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    // Cerrar el menú si se hace clic fuera de él
+    document.addEventListener("click", function(event) {
+      const dropdown = document.getElementById("userDropdown");
+      const toggle = document.querySelector(".user-dropdown-toggle");
+      if (dropdown.style.display === "block" && !dropdown.contains(event.target) && event.target !== toggle) {
+        dropdown.style.display = "none";
+      }
+    });
+  </script>
+{% endblock %}

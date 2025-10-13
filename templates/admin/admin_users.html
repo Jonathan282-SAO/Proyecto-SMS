@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administración de Usuarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">Admin - Usuarios</div>
+        <div class="header-right">
+            <span>Bienvenido, {{ admin_user }}</span>
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('admin_campaigns') }}">Campañas</a></li>
+            <li class="active"><a href="{{ url_for('admin_users') }}">Usuarios</a></li>
+            <li><a href="{{ url_for('admin_reports') }}">Reportes</a></li>
+            <li><a href="{{ url_for('admin_settings') }}">Configuraciones</a></li>
+        </ul>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="main-content">
+        <h2>Gestión de Usuarios</h2>
+
+        <!-- Formulario para Agregar Nuevo Usuario -->
+        <div class="user-form">
+            <h3>Agregar Nuevo Usuario</h3>
+           <form action="{{ url_for('add_user') }}" method="POST">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <select name="role" required>
+                    <option value="admin">Administrador</option>
+                    <option value="user" selected>Usuario</option>
+                </select>
+                <button type="submit">Agregar</button>
+            </form>
+        </div>
+
+        <!-- Tabla de Usuarios Existentes -->
+        <h3>Lista de Usuarios</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                    {% if user.role == 'admin' %}
+                        Administrador
+                    {% else %}
+                        Usuario
+                    {% endif %}
+
+                    </td>
+                    <td>
+                        <a href="{{ url_for('edit_user', user_id=user.id) }}">Editar</a> |
+                        <a href="{{ url_for('delete_user', user_id=user.id) }}" onclick="return confirm('¿Confirma eliminar este usuario?');">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; {{ year }} - Administración de Usuarios. Todos los derechos reservados.
+    </div>
+</body>
+</html>

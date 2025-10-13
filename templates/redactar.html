@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Redactar Mensaje</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* Aseguramos que html y body ocupen el 100% de la altura */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    /* Contenedor principal en columna que ocupa toda la altura */
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* El contenido se expande para empujar el footer hacia abajo */
+    .content {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <!-- Contenedor de contenido -->
+    <div class="content">
+      <!-- Banner superior -->
+      <div class="banner">
+        <div class="banner-left">
+          <span class="icono-baner"></span>
+          <span class="notificaciones">Notificaciones Masivas</span>
+        </div>
+        <div class="banner-right">
+          <span class="welcome-text">Bienvenido(a)</span>
+          <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
+          <div class="user-dropdown" id="userDropdown">
+            <ul>
+              <li><a href="{{ url_for('change_password') }}">Cambiar contraseña</a></li>
+              <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Barra de menú -->
+      <div class="menu-bar">
+        <ul class="menu-list">
+          <li><a href="{{ url_for('home') }}">Inicio</a></li>
+          <li><a href="{{ url_for('grupos') }}">Grupos</a></li>
+          <li><a href="{{ url_for('notificaciones') }}">Notificaciones</a></li>
+          <li><a href="{{ url_for('redactar') }}">Redactar</a></li>
+          <li class="active"><a href="{{ url_for('ayuda') }}">Ayuda</a></li>
+        </ul>
+      </div>
+      
+      <!-- Cuadro de Redacción -->
+      <form action="{{ url_for('redactar') }}" method="POST">
+        <div class="redactar-card">
+          <!-- Encabezado -->
+          <div class="redactar-header">
+            <img src="{{ url_for('static', filename='images/icono_seccion_redactar.png') }}" alt="Icono Redactar" class="icono-redactar">
+            <span>Redactar</span>
+          </div>
+          
+          <!-- Cuerpo -->
+          <div class="redactar-body">
+            <div class="grupo-seleccion">
+              <label for="grupos">Seleccionar grupos:</label>
+              <select id="grupos" name="grupo" required>
+                {% for grupo in grupos %}
+                <option value="{{ grupo.id }}">{{ grupo.nombre }}</option>
+                {% endfor %}
+              </select>
+
+              <div class="opciones-modalidad">
+                <input type="radio" id="correo" name="modalidad" value="correo" required>
+                <label for="correo">correo</label>
+                <input type="radio" id="sms" name="modalidad" value="sms">
+                <label for="sms">SMS</label>
+              </div>
+            </div>
+            
+            <div class="asunto">
+              <label for="asunto-input">Asunto:</label>
+              <input type="text" id="asunto-input" name="asunto" placeholder="Asunto del mensaje" required>
+            </div>
+            
+            <div class="mensaje">
+              <label for="mensaje-textarea">Mensaje:</label>
+              <textarea id="mensaje-textarea" name="mensaje" placeholder="Escribe el mensaje aquí..." required></textarea>
+            </div>
+            
+            <div class="nota">
+              <small>El texto no puede contener caracteres especiales ni la letra "ñ"</small>
+            </div>
+          </div>
+          
+          <!-- Pie -->
+          <div class="redactar-footer">
+            <button type="submit" class="enviar-button">
+              <img src="{{ url_for('static', filename='images/icono_enviar.png') }}" alt="Icono Enviar" class="icono-enviar">
+              Enviar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+  <!-- Footer: Su contenido se mantiene sin cambios -->
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-column">
+        <a href="https://www.etecsa.cu/">Nuestra Empresa</a>
+        <a href="https://www.etecsa.cu/es/noticias/nota-informativa">Noticias</a>
+      </div>
+      <div class="footer-column">
+        <a href="https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.youtube.com/channel/UCL0haKOFpVzhnKW3xSZJx9g/videos&ved=2ahUKEwjEl7nGz9uNAxX9nK8BHXnFML8QFnoECBUQAQ&usg=AOvVaw1mq5OFoaKhA0cx4T7ZyC-k">Multimedia</a>
+        <a href="https://portal.etecsa.cu/portalApp/listado">Servicios Internos</a>
+      </div>
+    </div>
+    <div class="footer-right">
+      <img src="{{ url_for('static', filename='images/icono_logo.png') }}" alt="Logo"   style="width: 90px; height: 50px;">
+      <span>&copy; {{ year }} Empresa de Telecomunicaciones de Cuba S.A (ETECSA) </span>
+    </div>
+  </footer>
+
+  <!-- Llamada al archivo JavaScript externo -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

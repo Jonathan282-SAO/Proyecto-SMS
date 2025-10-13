@@ -1,0 +1,21 @@
+<!-- templates/admin/edit_user.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Usuario</title>
+</head>
+<body>
+    <h2>Editar Usuario</h2>
+    <form method="POST">
+        <input type="text" name="username" value="{{ user.username }}" required>
+        <input type="email" name="email" value="{{ user.email }}" required>
+        <select name="role" required>
+            <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrador</option>
+            <option value="user" {% if user.role == 'user' %}selected{% endif %}>Usuario</option>
+        </select>
+        <button type="submit">Guardar cambios</button>
+    </form>
+    <a href="{{ url_for('admin_users') }}">Volver</a>
+</body>
+</html>

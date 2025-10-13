@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Admin Mensajería Masiva</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Enlaza tu hoja de estilos personalizada para el panel -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+  <div id="container">
+    <!-- Header -->
+    <header id="main-header">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/admin_logo.png') }}" alt="Admin Logo">
+        <span>Mensajería Masiva</span>
+      </div>
+      <div class="user-info">
+        <span>Bienvenido, {{ admin_user }}</span>
+        <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <ul>
+        <li class="active"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('admin_campaigns') }}">Campañas</a></li>
+        <li><a href="{{ url_for('admin_users') }}">Usuarios</a></li>
+        <li><a href="{{ url_for('admin_reports') }}">Reportes</a></li>
+        <li><a href="{{ url_for('admin_settings') }}">Configuraciones</a></li>
+      </ul>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main id="content">
+      <h1>Dashboard</h1>
+      <p>Resumen general del sistema.</p>
+      
+      <div class="stats-cards">
+        <div class="card">
+          <h3>Usuarios</h3>
+          <p>Total: <strong>123</strong></p>
+        </div>
+        <div class="card">
+          <h3>Mensajes</h3>
+          <p>Total: <strong>456</strong></p>
+        </div>
+        <div class="card">
+          <h3>Grupos</h3>
+          <p>Total: <strong>10</strong></p>
+        </div>
+      </div>
+      
+      <section class="recent-activity">
+        <h2>Actividad Reciente</h2>
+        <p>Aquí se mostrarán registros recientes y estadísticas detalladas del sistema.</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer id="main-footer">
+    &copy; {{ year }} - Mensajería Masiva
+  </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Notificaciones - Emergencias{% endblock %}
+
+{% block content %}
+  <!-- Banner superior -->
+  <div class="banner">
+    <div class="banner-left">
+      <span class="icono-baner"></span>
+      <span class="notificaciones">Notificaciones Masivas</span>
+    </div>
+    <div class="banner-right">
+      <span class="welcome-text">Bienvenido(a)</span>
+      <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
+      <div class="user-dropdown" id="userDropdown">
+        <ul>
+          <li><a href="{{ url_for('change_password') }}">Cambiar contraseña</a></li>
+          <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Barra de menú con búsqueda -->
+  <div class="menu-bar">
+    <ul class="menu-list">
+      <li><a href="{{ url_for('home') }}">Inicio</a></li>
+      <li><a href="{{ url_for('grupos') }}">Grupos</a></li>
+      <li><a href="{{ url_for('notificaciones') }}">Notificaciones</a></li>
+      <li><a href="{{ url_for('redactar') }}">Redactar</a></li>
+      <li class="active"><a href="{{ url_for('ayuda') }}">Ayuda</a></li>
+      <!-- Apartado de búsqueda -->
+      <li class="menu-search">
+        <form onsubmit="return false;">
+          <input id="searchInputN" type="text" placeholder="Buscar">
+        </form>
+      </li>
+    </ul>
+  </div>
+  
+  <!-- Panel de Emergencias -->
+  <div class="panel-emergencias">
+    <div class="panel-header">
+      <span class="icono-emergencias"></span>
+      <span class="panel-title">EMERGENCIAS</span>
+    </div>
+    <div class="panel-content">
+      <ul id="mensajesList" class="mensajes-list">
+         {% for msg in messages %}
+            <li>{{ msg }}</li>
+         {% endfor %}
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Script de búsqueda en tiempo real para Emergencias -->
+  <script>
+    document.getElementById('searchInputN').addEventListener('input', function() {
+      const filter = this.value.toLowerCase();
+      const liItems = document.querySelectorAll('#mensajesList li');
+      liItems.forEach(function(li) {
+         if(li.textContent.toLowerCase().indexOf(filter) > -1) {
+           li.style.display = '';
+         } else {
+           li.style.display = 'none';
+         }
+      });
+    });
+
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById("userDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    // Cerrar el menú si se hace clic fuera de él
+    document.addEventListener("click", function(event) {
+      const dropdown = document.getElementById("userDropdown");
+      const toggle = document.querySelector(".user-dropdown-toggle");
+      if (dropdown.style.display === "block" && !dropdown.contains(event.target) && event.target !== toggle) {
+        dropdown.style.display = "none";
+      }
+    });
+  </script>
+  
+{% endblock %}
