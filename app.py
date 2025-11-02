@@ -132,11 +132,11 @@ def add_user():
         password = request.form.get('password')
         role = request.form.get('role')
 
-        print(f"🔍 DEBUG - Datos recibidos: username={username}, email={email}, role={role}, password={'*' * len(password) if password else 'None'}")
+        print(f" DEBUG - Datos recibidos: username={username}, email={email}, role={role}, password={'*' * len(password) if password else 'None'}")
 
         if not all([username, email, password, role]):
             flash("Todos los campos son obligatorios", "error")
-            print("❌ ERROR - Campos faltantes")
+            print(" ERROR - Campos faltantes")
             return redirect(url_for('admin_users'))
 
         # Verificar si el usuario o email ya existen
@@ -146,7 +146,7 @@ def add_user():
         
         if existing_user:
             flash("Nombre de usuario o email ya existe", "error")
-            print(f"❌ ERROR - Usuario existente: {existing_user.username}")
+            print(f" ERROR - Usuario existente: {existing_user.username}")
             return redirect(url_for('admin_users'))
 
         try:
@@ -155,12 +155,12 @@ def add_user():
             db.session.add(nuevo_usuario)
             db.session.commit()
             
-            ##print(f"✅ USUARIO CREADO - ID: {nuevo_usuario.id}, Username: {nuevo_usuario.username}")
+            ##print(f" USUARIO CREADO - ID: {nuevo_usuario.id}, Username: {nuevo_usuario.username}")
             ##flash("Usuario agregado correctamente", "success")
             
         except Exception as e:
             db.session.rollback()
-            print(f"❌ ERROR EN BD: {str(e)}")
+            print(f" ERROR EN BD: {str(e)}")
             flash(f"Error al crear usuario: {str(e)}", "error")
             
         return redirect(url_for('admin_users'))

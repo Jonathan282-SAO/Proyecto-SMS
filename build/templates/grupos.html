@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grupos - Notificaciones Masivas</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/grupo.css') }}">    
+</head>
+
+<body>
+  <!-- Banner superior -->
+  <div class="banner">
+    <div class="banner-left">
+      <span class="icono-baner"></span>
+      <span class="notificaciones">Notificaciones Masivas</span>
+    </div>
+    <div class="banner-right">
+      <span class="welcome-text">Bienvenido(a)</span>
+      <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
+      <div class="user-dropdown" id="userDropdown">
+        <ul>
+          <li><a href="{{ url_for('change_password') }}">Cambiar contraseña</a></li>
+          <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra de menú con búsqueda -->
+  <div class="menu-bar">
+    <ul class="menu-list">
+      <li><a href="{{ url_for('home') }}">Inicio</a></li>
+      <li class="active"><a href="{{ url_for('grupos') }}">Grupos</a></li>
+      <li><a href="{{ url_for('notificaciones') }}">Notificaciones</a></li>
+      <li><a href="{{ url_for('redactar') }}">Redactar</a></li>
+      <li><a href="{{ url_for('ayuda') }}">Ayuda</a></li>
+      <!-- Apartado de búsqueda -->
+      <li class="menu-search">
+        <form onsubmit="return false;">
+          <input type="text" placeholder="Buscar">
+        </form>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="content">
+    <div class="grupos-content">
+      <!-- Tarjeta de Grupos -->
+      <div class="grupos-card">
+        <!-- Encabezado general de la tarjeta -->
+        <div class="grupos-card-header">
+          <div class="header-left">
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj48cGF0aCBkPSJNMTIgMTJjMi4yMSAwIDQtMS43OSA0LTRzLTEuNzktNC00LTQtNCAxLjc5LTQgNCAxLjc5IDQgNCA0em0wIDJjLTIuNjcgMC04IDEuMzQtOCA0djJoMTZ2LTJjMC0yLjY2LTUuMzMtNC04LTR6Ii8+PC9zdmc+"
+              alt="Icono Grupo">
+            <span>MIS GRUPOS</span>
+          </div>
+          <div class="header-right">
+            <button onclick="openModal()">Crear Grupo</button>
+            <!-- Ícono de filtro -->
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj48cGF0aCBkPSJNMTAgMThoNHYtMmgtNHYyek0zIDZ2MmgxOFY2SDN6bTMgN2gxMnYtMkg2djJ6Ii8+PC9zdmc+"
+              alt="Icono Filtro" class="icono-filtro" onclick="toggleFilterMenu()">
+          </div>
+          <!-- Mini menú de filtrado (desplegable) -->
+          <div id="filterMenu" class="filter-menu" style="display: none;">
+            <ul>
+              <li onclick="sortGroupsBy('services')">Mayor cantidad de servicios</li>
+              <li onclick="sortGroupsBy('messages')">Mayor cantidad de mensajes enviados</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Barra pivot: encabezado de columnas -->
+        <div class="group-row group-header">
+          <div class="group-name">Nombre del Grupo</div>
+          <div class="group-services">Número de Servicios</div>
+          <div class="group-messages">Mensajes Enviados</div>
+        </div>
+
+        <!-- Contenedor donde se agregarán los grupos creados -->
+        <div id="groupsList" class="groups-list">
+          <!-- Los grupos se agregarán dinámicamente -->
+          <div class="group-row">
+            <div class="group-name">Grupo de Marketing</div>
+            <div class="group-services">15</div>
+            <div class="group-messages">234</div>
+          </div>
+          <div class="group-row">
+            <div class="group-name">Equipo de Desarrollo</div>
+            <div class="group-services">8</div>
+            <div class="group-messages">156</div>
+          </div>
+          <div class="group-row">
+            <div class="group-name">Soporte Técnico</div>
+            <div class="group-services">12</div>
+            <div class="group-messages">321</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Crear Grupo -->
+  <div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Crear grupo</h2>
+      <!-- Input para el nombre del grupo -->
+      <div class="group-input">
+        <input type="text" id="groupName" placeholder="Nombre del grupo" required>
+      </div>
+      <!-- Sección para añadir servicios -->
+      <div class="service-section">
+        <!-- Botón para abrir el modal de Añadir Servicios -->
+        <button id="addServiceButton" class="service-button" type="button" onclick="openServicesModal()">
+          <img
+            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj48cGF0aCBkPSJNMTkgMTNoLTZ2NmgtMnYtNkg1di0yaDZWNWgydjZoNnYyeiIvPjwvc3ZnPg=="
+            alt="Icono Servicio" class="icono-servicio">
+          Añadir Usuario
+        </button>
+        <!-- Cuadro donde se mostrarán los servicios añadidos -->
+        <div class="services-box" id="servicesBox">
+          <!-- Se agregarán dinámicamente los servicios seleccionados -->
+        </div>
+      </div>
+      <!-- Pie del modal con botones Cancelar y Aceptar -->
+      <div class="modal-footer">
+        <button type="button" onclick="closeModal()">Cancelar</button>
+        <button type="button" onclick="acceptModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Añadir Servicios -->
+  <div id="servicesModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeServicesModal()">&times;</span>
+      <!-- Encabezado con título y barra de búsqueda -->
+      <div class="modal-header">
+        <h2>Añadir Usuarios</h2>
+        <input type="text" id="serviceSearch" placeholder="Buscar servicio...">
+      </div>
+      <!-- Cuerpo: cuadro con servicios posibles -->
+      <div class="modal-body">
+        <div class="services-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Seleccionar</th>
+                <th>Nombre del Usuario</th>
+                <th>Correo Electrónico</th>
+                <th>Número de Teléfono</th>
+              </tr>
+            </thead>
+            <tbody id="servicesTableBody">
+              <!-- Ejemplo de filas; normalmente se generarían dinámicamente o vía backend -->
+              <tr>
+                <td><input type="checkbox" class="service-checkbox"></td>
+                <td>Usuario A</td>
+                <td>UsuarioA@ejemplo.com</td>
+                <td>1234567890</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="service-checkbox"></td>
+                <td>Usuario B</td>
+                <td>UsuarioB@ejemplo.com</td>
+                <td>0987654321</td>
+              </tr>
+              <!-- Más filas según se necesite -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Pie del modal de Servicios -->
+      <div class="modal-footer">
+        <button type="button" onclick="closeServicesModal()">Cancelar</button>
+        <button type="button" onclick="acceptServicesModal()">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-column">
+        <a href="https://www.etecsa.cu/">Nuestra Empresa</a>
+        <a href="https://www.etecsa.cu/es/noticias/nota-informativa">Noticias</a>
+      </div>
+      <div class="footer-column">
+        <a
+          href="https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.youtube.com/channel/UCL0haKOFpVzhnKW3xSZJx9g/videos&ved=2ahUKEwjEl7nGz9uNAxX9nK8BHXnFML8QFnoECBUQAQ&usg=AOvVaw1mq5OFoaKhA0cx4T7ZyC-k">Multimedia</a>
+        <a href="https://portal.etecsa.cu/portalApp/listado">Servicios Internos</a>
+      </div>
+    </div>
+    <div class="footer-right">
+      <img
+        src="{{ url_for('static', filename='images/icono_logo.png') }}"
+        alt="Logo" style="width: 90px; height: 50px;">
+      <span>&copy; 2024 Empresa de Telecomunicaciones de Cuba S.A (ETECSA)</span>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Scripts personalizados -->
+  <script>
+    // Funciones para los modales
+    function openModal() {
+      document.getElementById('modal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function openServicesModal() {
+      document.getElementById('servicesModal').style.display = 'block';
+    }
+
+    function closeServicesModal() {
+      document.getElementById('servicesModal').style.display = 'none';
+    }
+
+    function acceptModal() {
+      alert('Grupo creado exitosamente');
+      closeModal();
+    }
+
+    function acceptServicesModal() {
+      alert('Usuarios añadidos al grupo');
+      closeServicesModal();
+    }
+
+    // Funciones para el menú de usuario
+    function toggleUserDropdown() {
+      const dropdown = document.getElementById("userDropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    // Cerrar el menú si se hace clic fuera de él
+    document.addEventListener("click", function (event) {
+      const dropdown = document.getElementById("userDropdown");
+      const toggle = document.querySelector(".user-dropdown-toggle");
+      if (dropdown.style.display === "block" && !dropdown.contains(event.target) && event.target !== toggle) {
+        dropdown.style.display = "none";
+      }
+    });
+
+    // Funciones para el filtro de grupos
+    function toggleFilterMenu() {
+      const filterMenu = document.getElementById("filterMenu");
+      filterMenu.style.display = filterMenu.style.display === "block" ? "none" : "block";
+    }
+
+    function sortGroupsBy(criteria) {
+      alert(`Ordenando grupos por: ${criteria}`);
+      document.getElementById("filterMenu").style.display = "none";
+    }
+
+    // Cerrar el menú de filtro si se hace clic fuera de él
+    document.addEventListener("click", function (event) {
+      const filterMenu = document.getElementById("filterMenu");
+      const filterIcon = document.querySelector(".icono-filtro");
+      if (filterMenu.style.display === "block" && !filterMenu.contains(event.target) && event.target !== filterIcon) {
+        filterMenu.style.display = "none";
+      }
+    });
+  </script>
+</body>
+
+</html>

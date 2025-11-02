@@ -7,7 +7,7 @@
     <title>Notificaciones - Sistema de Alertas</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/notificaciones.css') }}">  
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notificaciones.css') }}">
 </head>
 
 <body>
@@ -44,6 +44,25 @@
                 </form>
             </li>
         </ul>
+    </div>
+    <div class="filtro-container">
+        <div class="filtro-left">
+            <span class="filtro-label">Filtrar notificaciones:</span>
+            <span id="filtro-actual">Todas las prioridades</span>
+        </div>
+        <div class="filtro-right">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIj48cGF0aCBkPSJNMTAgMThoNHYtMmgtNHYyek0zIDZ2MmgxOFY2SDN6bTMgN2gxMnYtMkg2djJ6Ii8+PC9zdmc+"
+                alt="Icono Filtro" class="icono-filtro" onclick="togglePrioridadMenu()">
+            <!-- Menú desplegable de prioridades -->
+            <div id="prioridadMenu" class="filter-menu" style="display: none;">
+                <ul>
+                    <li onclick="filtrarPorPrioridad('todas')" class="prioridad-activa">Todas las prioridades</li>
+                    <li onclick="filtrarPorPrioridad('alta')">Alta prioridad</li>
+                    <li onclick="filtrarPorPrioridad('media')">Media prioridad</li>
+                    <li onclick="filtrarPorPrioridad('baja')">Baja prioridad</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <!-- Panel de Emergencias -->
@@ -199,6 +218,12 @@
                 }
             });
         });
+        // Función para mostrar/ocultar el menú de prioridades
+        function togglePrioridadMenu() {
+            const menu = document.getElementById('prioridadMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+  
     </script>
 </body>
 

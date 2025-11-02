@@ -7,7 +7,7 @@
 }
 
 body {
- background: url("../images/Fondo.png") no-repeat center center fixed;
+  background: url("../images/Fondo.png") no-repeat center center fixed;
   background-size: cover;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
@@ -165,6 +165,84 @@ body {
   background-color: white;
   box-shadow: 0 0 0 2px var(--primary-color);
 }
+/* Estilos para el filtro de prioridad */
+.filtro-container {
+  margin: 15px 0;
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filtro-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filtro-label {
+  font-weight: 500;
+  margin: 0;
+}
+
+.filtro-right {
+  position: relative;
+}
+
+.icono-filtro {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.icono-filtro:hover {
+  background-color: #e9ecef;
+}
+
+.filter-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 200px;
+  margin-top: 5px;
+}
+
+.filter-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-menu li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.filter-menu li:hover {
+  background-color: #f8f9fa;
+}
+
+.filter-menu li:last-child {
+  border-bottom: none;
+}
+
+.prioridad-activa {
+  background-color: #e3f2fd;
+  font-weight: 500;
+}
 
 /* Panel de Emergencias */
 .panel-emergencias {
@@ -177,7 +255,7 @@ body {
 }
 
 .panel-header {
-  background: linear-gradient(135deg, var(--accent-color), #c0392b);
+  background: linear-gradient(135deg, var(--accent-color), #f5958a);
   padding: 20px 30px;
   display: flex;
   align-items: center;
@@ -297,7 +375,7 @@ body {
 .footer-column {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
 }
 
 .footer-column a {
