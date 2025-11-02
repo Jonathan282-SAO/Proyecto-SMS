@@ -30,19 +30,19 @@
     <!-- Barra de menú con búsqueda -->
     <div class="menu-bar">
         <ul class="menu-list">
-            <li><a href="{{ url_for('home') }}">Inicio</a></li>
-            <li><a href="{{ url_for('grupos') }}">Grupos</a></li>
-            <li><a href="{{ url_for('notificaciones') }}">Notificaciones</a></li>
-            <li><a href="{{ url_for('redactar') }}">Redactar</a></li>
-            <li class="active"><a href="{{ url_for('ayuda') }}">Ayuda</a></li>
-            <!-- Apartado de búsqueda: se posiciona a la derecha -->
-            <li class="menu-search">
-                <form onsubmit="return false;">
-                    <input id="searchInput" type="text" placeholder="Buscar">
-                </form>
-            </li>
-        </ul>
-    </div>
+            <li class="{{ 'active' if request.path == url_for('home') else '' }}"><a href="{{ url_for('home') }}">Inicio</a></li>
+            <li class="{{ 'active' if request.path == url_for('grupos') else '' }}"><a href="{{ url_for('grupos') }}">Grupos</a></li>
+            <li class="{{ 'active' if request.path == url_for('notificaciones') else '' }}"><a href="{{ url_for('notificaciones') }}">Notificaciones</a></li>
+            <li class="{{ 'active' if request.path == url_for('redactar') else '' }}"><a href="{{ url_for('redactar') }}">Redactar</a></li>
+            <li class="{{ 'active' if request.path == url_for('ayuda') else '' }}"><a href="{{ url_for('ayuda') }}">Ayuda</a></li>
+             <!-- Apartado de búsqueda: se posiciona a la derecha -->
+             <li class="menu-search">
+                 <form onsubmit="return false;">
+                     <input id="searchInput" type="text" placeholder="Buscar">
+                 </form>
+             </li>
+         </ul>
+     </div>
     
     <!-- Panel de Envios con mensajes de prueba -->
     <div class="panel-envios">

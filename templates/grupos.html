@@ -22,8 +22,8 @@
       <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
       <div class="user-dropdown" id="userDropdown">
         <ul>
-          <li><a href="#">Cambiar contraseña</a></li>
-          <li><a href="#">Cerrar sesión</a></li>
+          <li><a href="{{ url_for('change_password') }}">Cambiar contraseña</a></li>
+          <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li>
         </ul>
       </div>
     </div>

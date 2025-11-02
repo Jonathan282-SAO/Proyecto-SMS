@@ -17,7 +17,9 @@
         </div>
         <div class="banner-right">
             <span class="welcome-text">Bienvenido(a)</span>
-            <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
+            <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">
+  {{ usuario or session.get('username') or 'Usuario' }}
+</span>
             <div class="user-dropdown" id="userDropdown">
                 <ul>
                     <li><a href="{{ url_for('change_password') }}">Cambiar contraseña</a></li>

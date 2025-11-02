@@ -13,8 +13,6 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Banner superior */
@@ -232,7 +230,7 @@ body {
 .footer {
   background-color: rgba(44, 62, 80, 0.9);
   color: white;
-  padding: 20px 30px;
+  padding: 12px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -359,10 +357,12 @@ body {
   }
 }
 .footer {
-  gap: 40px;
+  flex-direction: column;
+  gap: 20px;
   text-align: center;
 }
 
 .footer-left {
-  gap: 40px;
+  flex-direction: column;
+  gap: 20px;
 }

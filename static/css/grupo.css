@@ -6,15 +6,28 @@
       --dark-color: #2c3e50;
     }
 
+    /* Layout base para sticky footer */
+    html, body {
+        background: url("../images/Fondo.png") no-repeat center center fixed;
+        background-size: cover;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
     body {
-       background: url("../images/Fondo.png") no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        /* evita que reglas previas con position:absolute hagan flotar el footer */
+        position: relative;
+    }
+
+    /* El contenido principal debe crecer para empujar el footer */
+    .content {
+        flex: 1 0 auto;
+        /* opcional: separación inferior para que el contenido no pegue al footer */
+        padding-bottom: 1rem;
     }
 
     /* Banner superior */
@@ -527,6 +540,20 @@
       display: flex;
       align-items: center;
       gap: 15px;
+    }
+
+    /* Ajustes responsivos: apilar en pantallas pequeñas */
+    .footer-left, .footer-right {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+    @media (max-width: 768px) {
+        .footer {
+            flex-direction: column;
+            text-align: center;
+            gap: 8px;
+        }
     }
 
     /* Responsive */
