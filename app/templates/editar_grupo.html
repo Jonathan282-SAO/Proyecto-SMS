@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Grupo{% endblock %}
+
+{% block content %}
+
+<div class="grupos-card" style="max-width:900px; margin:20px auto; padding:0;">
+    <div class="modal-content" style="margin:0; border-radius:12px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Editar Grupo</h2>
+        </div>
+
+        <div style="padding:20px;">
+            <form method="POST" action="{{ url_for('main.editar_grupo', id=grupo.id) }}">
+                {%- if form is defined and form.csrf_token is defined -%}
+                        {{ form.csrf_token }}
+                {%- elif csrf_token is defined -%}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                {%- endif -%}
+
+                <div class="group-input mb-3">
+                        <label for="nombre" class="form-label">Nombre del grupo</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ grupo.nombre }}" required>
+                </div>
+
+                <h5 class="mt-3">Seleccionar usuarios</h5>
+
+                <div class="border p-3 rounded mb-3" style="max-height: 300px; overflow-y: auto;">
+                        {% for u in usuarios %}
+                        <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="usuarios" value="{{ u.id }}" id="user{{ u.id }}" {% if u in grupo.usuarios %}checked{% endif %}>
+                                <label class="form-check-label" for="user{{ u.id }}">{{ u.username }} ({{ u.email or 'sin email' }})</label>
+                        </div>
+                        {% endfor %}
+                </div>
+
+                <div class="modal-footer" style="padding:0;">
+                    <div style="padding:20px; display:flex; justify-content:flex-end; gap:12px;">
+                        <a href="{{ url_for('main.grupos') }}" class="btn" style="background:#95a5a6; color:#fff;">Volver</a>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'admin/admin_base.html' %}
+{% block title %}Editar Campaña{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0">Editar Campaña</h2>
+    <small class="text-muted">Modifica los datos de la campaña</small>
+  </div>
+  <div>
+    <a href="{{ url_for('admin.admin_campaigns') }}" class="btn btn-outline-secondary btn-sm">Volver</a>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <form action="{{ url_for('admin.admin_campaigns_edit', campaign_id=campaign.id) }}" method="POST" class="row g-3">
+      {%- if form is defined and form.csrf_token is defined -%}
+        {{ form.csrf_token }}
+      {%- elif csrf_token is defined -%}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {%- endif -%}
+      <div class="col-12 col-md-6">
+        <label for="campaign_name" class="form-label">Nombre de campaña</label>
+        <input id="campaign_name" name="campaign_name" class="form-control" value="{{ campaign.name }}" required>
+      </div>
+
+      <div class="col-12">
+        <label for="campaign_message" class="form-label">Mensaje</label>
+        <textarea id="campaign_message" name="campaign_message" class="form-control" rows="6" required>{{ campaign.message }}</textarea>
+        <div class="form-text">Máx. 1000 caracteres. Puedes usar variables como {{'{{ name }}'}} en el texto.</div>
+      </div>
+
+      <div class="col-12 d-flex gap-2 justify-content-end">
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <a href="{{ url_for('admin.admin_campaigns') }}" class="btn btn-outline-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

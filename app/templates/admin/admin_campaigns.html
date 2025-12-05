@@ -1,0 +1,254 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}Campañas - Admin{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <small class="text-muted">Gestión de campañas y envíos programados</small>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h6 class="text-muted">Total campañas</h6>
+          <h3 class="mb-0">{{ campaigns|length if campaigns is defined else 0 }}</h3>
+          <p class="small text-muted mb-0">Registradas</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h6 class="text-muted">Activas</h6>
+          <h3 class="mb-0">{{ active_count if active_count is defined else (campaigns | selectattr('active') | list | length if campaigns is defined else 0) }}</h3>
+          <p class="small text-muted mb-0">Actualmente activas</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h6 class="text-muted">Programadas</h6>
+          <h3 class="mb-0">{{ scheduled_count if scheduled_count is defined else 0 }}</h3>
+          <p class="small text-muted mb-0">Pendientes</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Listado de campañas</h5>
+        <small class="text-muted">Ordenado por fecha</small>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Grupos</th>
+              <th>Mensaje</th>
+              <th>Fecha</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if campaigns is defined and campaigns %}
+              {% for c in campaigns %}
+                <tr>
+                  <td>{{ c.id }}</td>
+                  <td class="fw-semibold">{{ c.name or c.nombre or ('Campaña ' ~ c.id) }}</td>
+                  <td>
+                    {% set tg = campaign_targets.get(c.id, []) if campaign_targets is defined else [] %}
+                    {% if tg %}
+                      <span class="badge bg-secondary">{{ tg|length }}</span>
+                      <div class="small text-muted text-truncate" style="max-width:180px;">{{ (tg|join(', '))[:120] }}{% if (tg|join(', ')|length) > 120 %}...{% endif %}</div>
+                    {% else %}
+                      <small class="text-muted">Ninguno</small>
+                    {% endif %}
+                  </td>
+                  <td class="text-truncate" style="max-width:320px;">{{ (c.message or c.descripcion)[:120] }}</td>
+                  <td class="small text-muted">
+                    {% if c.date is defined and c.date %}{{ c.date.strftime('%Y-%m-%d %H:%M') }}
+                    {% elif c.created_at is defined and c.created_at %}{{ c.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    {% else %}—{% endif %}
+                  </td>
+                  <td class="text-end">
+                    <a href="{{ url_for('admin.admin_campaigns_edit', campaign_id=c.id) }}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                    <!-- Botón Eliminar: abre modal de confirmación -->
+                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-campaign-id="{{ c.id }}" data-campaign-name="{{ c.name or ('Campaña ' ~ c.id) }}">Eliminar</button>
+
+                    <!-- Toggle active -->
+                    <form action="{{ url_for('admin.admin_campaigns_toggle', campaign_id=c.id) }}" method="POST" style="display:inline; margin-left:6px;">
+                      {%- if form is defined and form.csrf_token is defined -%}
+                        {{ form.csrf_token }}
+                      {%- elif csrf_token is defined -%}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      {%- endif -%}
+                      <button class="btn btn-sm btn-outline-{{ 'success' if (c.active is defined and c.active) else 'secondary' }}" title="{{ 'Desactivar' if (c.active is defined and c.active) else 'Activar' }}">
+                        {{ 'Activo' if (c.active is defined and c.active) else 'Inactivo' }}
+                      </button>
+                    </form>
+
+                    <!-- Botón Programar (abre modal) -->
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#scheduleModal" data-campaign-id="{{ c.id }}" data-campaign-date="{{ c.date.strftime('%Y-%m-%dT%H:%M') if c.date else '' }}">Programar</button>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-muted py-4">No hay campañas. Pulse "Crear campaña" para añadir una.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Acciones</h5>
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <a class="btn btn-outline-secondary" href="{{ url_for('admin.admin_campaigns') }}">Refrescar lista</a>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#campaignModal">Nueva campaña</button>
+            <a class="btn btn-outline-danger" href="{{ url_for('admin.admin_campaigns') }}#limpiar">Limpiar finalizadas</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear campaña -->
+  <div class="modal fade" id="campaignModal" tabindex="-1" aria-labelledby="campaignModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="campaignModalLabel">Crear nueva campaña</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form action="{{ url_for('admin.admin_campaigns_add') }}" method="POST">
+          <div class="modal-body">
+            {%- if form is defined and form.csrf_token is defined -%}
+              {{ form.csrf_token }}
+            {%- elif csrf_token is defined -%}
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {%- endif -%}
+
+            <div class="mb-3">
+              <label class="form-label">Nombre</label>
+              <input type="text" name="campaign_name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Grupos destinatarios</label>
+              <select name="groups" class="form-select" multiple size="6">
+                {% if groups is defined and groups %}
+                  {% for g in groups %}
+                    <option value="{{ g.id }}">{{ g.nombre }}</option>
+                  {% endfor %}
+                {% else %}
+                  <option disabled>No hay grupos disponibles</option>
+                {% endif %}
+              </select>
+              <div class="form-text">Mantén presionada Ctrl/Cmd para seleccionar múltiples grupos.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Prioridad</label>
+              <select name="priority" class="form-select">
+                <option value="media" selected>Media</option>
+                <option value="alta">Alta</option>
+                <option value="baja">Baja</option>
+              </select>
+              <div class="form-text">Selecciona la prioridad de la campaña (Alta/Media/Baja).</div>
+            </div>
+
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="checkbox" value="1" id="active_now" name="active_now">
+              <label class="form-check-label" for="active_now">Activar campaña al crear</label>
+              <div class="form-text">Dejar desmarcado para crear la campaña en modo inactivo (recomendado).</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Mensaje</label>
+              <textarea name="campaign_message" class="form-control" rows="5" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Crear campaña</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal para programar campaña -->
+    <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="scheduleModalLabel">Programar campaña</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <form action="{{ url_for('admin.admin_campaigns_schedule_simple') }}" method="POST" id="scheduleForm">
+            <div class="modal-body">
+              {%- if form is defined and form.csrf_token is defined -%}
+                {{ form.csrf_token }}
+              {%- elif csrf_token is defined -%}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              {%- endif -%}
+              <input type="hidden" name="campaign_id" id="sched_campaign_id" value="">
+              <input type="hidden" name="tz_offset" id="tz_offset" value="">
+              <div class="mb-3">
+                <label class="form-label">Fecha y hora</label>
+                <input type="datetime-local" name="scheduled_at" id="scheduled_at" class="form-control" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Programar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar campaña -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <form action="{{ url_for('admin.admin_campaigns_delete_simple') }}" method="POST" id="deleteForm">
+            <div class="modal-body">
+              {%- if form is defined and form.csrf_token is defined -%}
+                {{ form.csrf_token }}
+              {%- elif csrf_token is defined -%}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              {%- endif -%}
+              <input type="hidden" name="campaign_id" id="delete_campaign_id" value="">
+              <p class="mb-0">¿Estás seguro de eliminar la campaña <strong id="delete_campaign_name">?</strong>?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+{% endblock %}

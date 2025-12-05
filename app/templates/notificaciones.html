@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}Notificaciones - {{ system_name }}{% endblock %}
+
+{% block head_extras %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/notificaciones.css') }}">
+{% endblock %}
+
+{% block content %}
+    <!-- Banner superior -->
+    <div class="banner">
+        <div class="banner-left">
+            <span class="icono-baner"></span>
+            <span class="notificaciones">{{ system_name }}</span>
+        </div>
+        <div class="banner-right">
+            <span class="welcome-text">Bienvenido(a)</span>
+            <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
+            <div class="user-dropdown" id="userDropdown">
+              <ul>
+                {% if session.get('role') == 'admin' %}
+                  <li><a href="{{ url_for('admin.admin') }}">Panel Admin</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('main.change_password') }}">Cambiar contraseña</a></li>
+                <li><a href="{{ url_for('main.logout') }}">Cerrar sesión</a></li>
+              </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de menú con búsqueda -->
+    <div class="menu-bar">
+        <ul class="menu-list">
+            <li><a href="{{ url_for('main.home') }}">Inicio</a></li>
+            <li><a href="{{ url_for('main.grupos') }}">Grupos</a></li>
+            <li class="active"><a href="{{ url_for('main.notificaciones') }}">Notificaciones</a></li>
+            <li><a href="{{ url_for('main.redactar') }}">Redactar</a></li>
+            <li><a href="{{ url_for('main.ayuda') }}">Ayuda</a></li>
+            <!-- Apartado de búsqueda -->
+            <li class="menu-search">
+                <form onsubmit="return false;">
+                    <input id="searchInputN" type="text" placeholder="Buscar notificaciones...">
+                </form>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Panel de Emergencias -->
+    <div class="panel-emergencias">
+        <div class="panel-header">
+            <span class="icono-emergencias"></span>
+            <span class="panel-title">EMERGENCIAS Y NOTIFICACIONES</span>
+        </div>
+          <div class="panel-content">
+              <div style="display:flex; justify-content:flex-end; margin-bottom:14px;">
+                <form id="dateFilterForm" method="GET" action="" style="display:flex; gap:8px; align-items:center;">
+                  <div style="display:flex; flex-direction:column;">
+                    <label style="font-size:12px; color:#666;">Desde (día de inicio)</label>
+                    <input type="date" name="from" value="{{ from_date or '' }}" class="form-control" style="height:34px;">
+                  </div>
+                  <div style="display:flex; flex-direction:column;">
+                    <label style="font-size:12px; color:#666;">Hasta (día final, inclusive)</label>
+                    <input type="date" name="to" value="{{ to_date or '' }}" class="form-control" style="height:34px;">
+                  </div>
+                  <div style="display:flex; align-items:end;">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Filtrar</button>
+                  </div>
+                </form>
+              </div>
+              <ul id="mensajesList" class="mensajes-list">
+                  {# Render dinámico de notificaciones (campañas y mensajes) #}
+                {% if notifications is defined and notifications %}
+                  {% for n in notifications %}
+                    {% set pr = (n.priority or 'baja') %}
+                    {% if pr == 'alta' %}
+                      {% set cls = 'mensaje-prioridad-alta' %}
+                      {% set badge_class = 'bg-danger' %}
+                      {% set emoji = '🚨' %}
+                      {% set label = 'Alta Prioridad' %}
+                    {% elif pr == 'media' %}
+                      {% set cls = 'mensaje-prioridad-media' %}
+                      {% set badge_class = 'bg-warning' %}
+                      {% set emoji = '⚠️' %}
+                      {% set label = 'Media Prioridad' %}
+                    {% else %}
+                      {% set cls = 'mensaje-prioridad-baja' %}
+                      {% set badge_class = 'bg-success' %}
+                      {% set emoji = '📢' %}
+                      {% set label = 'Baja Prioridad' %}
+                    {% endif %}
+
+                    <li class="{{ cls }}">
+                      <div class="mensaje-info">
+                        <div class="mensaje-texto">{{ emoji }} {{ n.title }}</div>
+                        <div class="mensaje-metadata">
+                          <span>Enviado: {{ n.sent_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                          <span>Por: {{ n.author }}</span>
+                          <span class="badge {{ badge_class }}">{{ label }}</span>
+                        </div>
+                      </div>
+                      <div class="mensaje-actions">
+                        <button class="btn btn-outline-primary btn-sm btn-detalles" data-title="{{ n.title|e }}" data-text="{{ n.text|e }}" data-author="{{ n.author|e }}" data-sent="{{ n.sent_at.isoformat() if n.sent_at else '' }}" data-priority="{{ n.priority|e }}">Ver detalles</button>
+                      </div>
+                    </li>
+                  {% endfor %}
+                {% else %}
+                  <li class="text-center text-muted py-4">No hay notificaciones disponibles.</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="panel-footer mt-2" style="padding:12px 18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div class="text-muted">Mostrando {{ notifications|length if notifications is defined else 0 }} de {{ total_notifications if total_notifications is defined else 0 }}</div>
+            <nav aria-label="Paginación notificaciones">
+              <ul class="pagination pagination-sm mb-0">
+                {# Prev link #}
+                {% set prev_page = page - 1 if page and page > 1 else None %}
+                <li class="page-item {% if not prev_page %}disabled{% endif %}">
+                  {% if prev_page %}
+                    <a class="page-link" href="?page={{ prev_page }}{% if from_date %}&from={{ from_date }}{% endif %}{% if to_date %}&to={{ to_date }}{% endif %}">Anterior</a>
+                  {% else %}
+                    <span class="page-link">Anterior</span>
+                  {% endif %}
+                </li>
+
+                {# Page numbers: show a window around current page #}
+                {% set start_page = page - 2 if page - 2 > 1 else 1 %}
+                {% set end_page = page + 2 if page + 2 < total_pages else total_pages %}
+                {% if start_page > 1 %}
+                  <li class="page-item"><a class="page-link" href="?page=1{% if from_date %}&from={{ from_date }}{% endif %}{% if to_date %}&to={{ to_date }}{% endif %}">1</a></li>
+                  {% if start_page > 2 %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                  {% endif %}
+                {% endif %}
+
+                {% for p in range(start_page, end_page + 1) %}
+                  <li class="page-item {% if p == page %}active{% endif %}">
+                    {% if p == page %}
+                      <span class="page-link">{{ p }}</span>
+                    {% else %}
+                      <a class="page-link" href="?page={{ p }}{% if from_date %}&from={{ from_date }}{% endif %}{% if to_date %}&to={{ to_date }}{% endif %}">{{ p }}</a>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+
+                {% if end_page < total_pages %}
+                  {% if end_page < total_pages - 1 %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                  {% endif %}
+                  <li class="page-item"><a class="page-link" href="?page={{ total_pages }}{% if from_date %}&from={{ from_date }}{% endif %}{% if to_date %}&to={{ to_date }}{% endif %}">{{ total_pages }}</a></li>
+                {% endif %}
+
+                {# Next link #}
+                {% set next_page = page + 1 if page < total_pages else None %}
+                <li class="page-item {% if not next_page %}disabled{% endif %}">
+                  {% if next_page %}
+                    <a class="page-link" href="?page={{ next_page }}{% if from_date %}&from={{ from_date }}{% endif %}{% if to_date %}&to={{ to_date }}{% endif %}">Siguiente</a>
+                  {% else %}
+                    <span class="page-link">Siguiente</span>
+                  {% endif %}
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+    </div>
+
+    <!-- footer se provee desde base.html -->
+{% endblock %}
+
+{% block scripts %}
+  <!-- Script de búsqueda en tiempo real para Emergencias -->
+  <script src="{{ url_for('static', filename='js/notificaciones.js') }}"></script>
+
+  <!-- Modal de detalles de notificación -->
+  <div class="modal fade" id="notificationDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Detalle</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="nd-meta mb-2">
+            <small class="text-muted">Enviado: <span class="nd-sent"></span></small>
+            &nbsp;•&nbsp;
+            <small class="text-muted">Por: <span class="nd-author"></span></small>
+            &nbsp;•&nbsp;
+            <span class="badge nd-badge"></span>
+          </div>
+          <div class="nd-text" style="white-space:pre-wrap;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+  {# Mostrar resumen rápido solo en la página "General" (admin) #}
+  {% if request.path == url_for('admin.admin') or request.endpoint == 'admin.admin' %}
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Resumen rápido de secciones</h5>
+          <div class="row g-2">
+            <div class="col-12 col-md-6 col-lg-4">
+              <a href="{{ url_for('admin.admin_campaigns') }}" class="text-decoration-none">
+                <div class="p-3 border rounded d-flex align-items-start gap-3">
+                  <div class="fs-4 text-muted">📣</div>
+                  <div>
+                    <div class="fw-semibold">Campañas</div>
+                    <div class="small text-muted">Crear/editar/eliminar campañas — {{ campaigns|length if campaigns is defined else (campañas|length if campañas is defined else 0) }}</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <a href="{{ url_for('admin.admin_users') }}" class="text-decoration-none">
+                <div class="p-3 border rounded d-flex align-items-start gap-3">
+                  <div class="fs-4 text-muted">👥</div>
+                  <div>
+                    <div class="fw-semibold">Usuarios</div>
+                    <div class="small text-muted">Gestionar cuentas y roles — {{ users|length if users is defined else 0 }}</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <a href="{{ url_for('admin.admin_reports') }}" class="text-decoration-none">
+                <div class="p-3 border rounded d-flex align-items-start gap-3">
+                  <div class="fs-4 text-muted">📊</div>
+                  <div>
+                    <div class="fw-semibold">Reportes</div>
+                    <div class="small text-muted">Visión general y métricas</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <a href="{{ url_for('admin.admin_settings') }}" class="text-decoration-none">
+                <div class="p-3 border rounded d-flex align-items-start gap-3">
+                  <div class="fs-4 text-muted">⚙️</div>
+                  <div>
+                    <div class="fw-semibold">Configuraciones</div>
+                    <div class="small text-muted">Ajustes generales del sistema</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4">
+              <a href="{{ url_for('admin.admin_dashboard') }}" class="text-decoration-none">
+                <div class="p-3 border rounded d-flex align-items-start gap-3">
+                  <div class="fs-4 text-muted">🏠</div>
+                  <div>
+                    <div class="fw-semibold">Dashboard</div>
+                    <div class="small text-muted">Resumen y actividad reciente</div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {% block admin_page_content %}{% endblock %}
+{% endblock %}

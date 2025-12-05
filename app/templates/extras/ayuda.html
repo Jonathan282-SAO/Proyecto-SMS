@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Ayuda - {{ system_name }}{% endblock %}
+
+{% block head_extras %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ayuda.css') }}">
+{% endblock %}
+
+{% block content %}
+    <!-- Banner superior -->
+    <div class="banner">
+        <div class="banner-left">
+            <span class="icono-baner"></span>
+            <span class="notificaciones">{{ system_name }}</span>
+        </div>
+        <div class="banner-right">
+            <span class="welcome-text">Bienvenido(a)</span>
+            <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario or session.get('username') or 'Usuario' }}</span>
+            <div class="user-dropdown" id="userDropdown">
+                <ul>
+                    {% if session.get('role') == 'admin' %}
+                      <li><a href="{{ url_for('admin.admin') }}">Panel Admin</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('main.change_password') }}">Cambiar contraseña</a></li>
+                    <li><a href="{{ url_for('main.logout') }}">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de menú -->
+    <div class="menu-bar">
+        <ul class="menu-list">
+            <li><a href="{{ url_for('main.home') }}">Inicio</a></li>
+            <li><a href="{{ url_for('main.grupos') }}">Grupos</a></li>
+            <li><a href="{{ url_for('main.notificaciones') }}">Notificaciones</a></li>
+            <li><a href="{{ url_for('main.redactar') }}">Redactar</a></li>
+            <li class="active"><a href="{{ url_for('main.ayuda') }}">Ayuda</a></li>
+        </ul>
+    </div>
+
+    <!-- Contenido principal de Ayuda -->
+    <div class="ayuda-content">
+        <h1>Centro de Ayuda</h1>
+        
+        <!-- Preguntas Frecuentes con Acordeón -->
+        <section class="ayuda-section">
+            <h2>📋 Preguntas Frecuentes</h2>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            ¿Cómo inicio sesión en el sistema?
+                        </button>
+                    </h3>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Para iniciar sesión, ingresa tu nombre de usuario y contraseña en la página de inicio de sesión. Si es tu primera vez, contacta al administrador del sistema para obtener tus credenciales.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            ¿Cómo cambio mi contraseña?
+                        </button>
+                    </h3>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Puedes cambiar tu contraseña haciendo clic en tu nombre de usuario en la esquina superior derecha y seleccionando "Cambiar Contraseña" en el menú desplegable.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            ¿Cómo envío un mensaje masivo?
+                        </button>
+                    </h3>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Dirígete a la sección "Redactar", selecciona el grupo destino, elige la modalidad (Correo o SMS), escribe el asunto y el mensaje, luego presiona el botón "Enviar Mensaje".
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            ¿Cómo creo o administro grupos?
+                        </button>
+                    </h3>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Accede a la sección "Grupos" donde podrás crear nuevos grupos, añadir usuarios existentes y administrar los grupos que hayas creado. Solo los administradores pueden crear grupos globales.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            ¿Qué restricciones tienen los mensajes?
+                        </button>
+                    </h3>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Los mensajes no pueden contener caracteres especiales ni la letra "ñ". Se recomienda usar texto plano para garantizar la compatibilidad con todos los dispositivos receptores.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guía de Uso -->
+        <section class="ayuda-section">
+            <h2>🚀 Guía de Uso de la Plataforma</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Navegación Principal</h5>
+                            <p class="card-text">El menú superior te permite acceder a todas las funciones básicas:</p>
+                            <ul>
+                                <li><strong>Inicio:</strong> Dashboard principal con resumen de actividades</li>
+                                <li><strong>Grupos:</strong> Gestión de grupos de contactos</li>
+                                <li><strong>Notificaciones:</strong> Historial de mensajes enviados</li>
+                                <li><strong>Redactar:</strong> Creación de nuevos mensajes</li>
+                                <li><strong>Ayuda:</strong> Esta sección de soporte</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Flujo de Trabajo</h5>
+                            <p class="card-text">Sigue estos pasos para enviar notificaciones:</p>
+                            <ol>
+                                <li>Verifica que tengas los grupos configurados</li>
+                                <li>Redacta tu mensaje en la sección correspondiente</li>
+                                <li>Selecciona el grupo destino y la modalidad</li>
+                                <li>Revisa y envía el mensaje</li>
+                                <li>Consulta el historial en "Notificaciones"</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Información de Contacto -->
+        <section class="ayuda-section">
+            <h2>📞 Contacto y Soporte Técnico</h2>
+            <div class="alert alert-info">
+                <h5 class="alert-heading">¿Necesitas ayuda adicional?</h5>
+                <p class="mb-2">Nuestro equipo de soporte está disponible para asistirte con cualquier problema o duda que puedas tener.</p>
+                <hr>
+                <p class="mb-0">
+                    <strong>Correo de soporte:</strong> 
+                    <a href="mailto:{{ support_email }}" class="alert-link">{{ support_email }}</a>
+                </p>
+                <p class="mb-0 mt-2">
+                    <strong>Horario de atención:</strong> Lunes a Viernes, 8:00 AM - 5:00 PM
+                </p>
+                <p class="mb-0 mt-2">
+                    <strong>Tiempo de respuesta:</strong> Máximo 24 horas hábiles
+                </p>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/extras_ayuda.js') }}"></script>
+{% endblock %}

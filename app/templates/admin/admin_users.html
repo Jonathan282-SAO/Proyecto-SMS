@@ -1,0 +1,128 @@
+{% extends 'admin/admin_base.html' %}
+{% block title %}Usuarios{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0">Usuarios</h2>
+    <small class="text-muted">Gestión de cuentas y roles</small>
+  </div>
+  <div>
+    <a href="{{ url_for('admin.admin') }}" class="btn btn-outline-secondary btn-sm">Volver al general</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  {# Removed left inline add-user card; replaced by modal trigger in header #}
+
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Lista de usuarios</h5>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Crear usuario</button>
+            <small class="text-muted">{{ users|length if users is defined else 0 }} registrados</small>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width:72px;">ID</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th style="width:140px;">Rol</th>
+                <th class="text-end" style="width:170px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if users is defined and users %}
+                {% for user in users %}
+                  <tr>
+                    <td class="fw-semibold">{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td class="text-muted small">{{ user.email or '—' }}</td>
+                    <td>
+                      {% if user.role == 'admin' %}
+                        <span class="badge bg-success">Administrador</span>
+                      {% else %}
+                        <span class="badge bg-secondary">Usuario</span>
+                      {% endif %}
+                    </td>
+                    <td class="text-end">
+                      <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                      <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar usuario?');">
+                        {%- if form is defined and form.csrf_token is defined -%}
+                          {{ form.csrf_token }}
+                        {%- elif csrf_token is defined -%}
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        {%- endif -%}
+                        <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">No hay usuarios registrados</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Modal Bootstrap para Crear Usuario (mismo formulario que había en la tarjeta) #}
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addUserModalLabel">Agregar nuevo usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ url_for('admin.add_user') }}" method="POST" id="addUserForm">
+          {%- if form is defined and form.csrf_token is defined -%}
+            {{ form.csrf_token }}
+          {%- elif csrf_token is defined -%}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          {%- endif -%}
+
+          <div class="mb-3">
+            <label for="m_username" class="form-label">Usuario</label>
+            <input id="m_username" name="username" type="text" class="form-control" placeholder="Nombre de usuario" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="m_email" class="form-label">Correo</label>
+            <input id="m_email" name="email" type="email" class="form-control" placeholder="correo@ejemplo.com" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="m_password" class="form-label">Contraseña</label>
+            <input id="m_password" name="password" type="password" class="form-control" placeholder="Contraseña" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="m_role" class="form-label">Rol</label>
+            <select id="m_role" name="role" class="form-select">
+              <option value="user" selected>Usuario</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="addUserForm" class="btn btn-primary btn-sm">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

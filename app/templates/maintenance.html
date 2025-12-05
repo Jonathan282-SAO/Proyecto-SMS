@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Mantenimiento - {{ system_name }}{% endblock %}
+
+{% block head_extras %}
+<style>
+  body { background: linear-gradient(180deg, #f4f7fb 0%, #eef6ff 100%); }
+  .maintenance-wrapper { min-height: 80vh; display:flex; align-items:center; justify-content:center; padding:4rem 1rem; }
+  .maintenance-card { max-width:720px; width:100%; text-align:center; padding:2.5rem; border-radius:14px; box-shadow: 0 12px 40px rgba(10,20,50,0.08); background: #ffffff; }
+  .maintenance-icon { width:96px; height:96px; margin:0 auto 1rem; display:flex; align-items:center; justify-content:center; border-radius:50%; background: linear-gradient(180deg,#e9f2ff,#ffffff); color:#0b2d6b; font-size:2rem; }
+  .maintenance-title { font-size:1.8rem; font-weight:700; margin-bottom:0.5rem; color:#06204a; }
+  .maintenance-lead { font-size:1.05rem; color:#495057; margin-bottom:1rem; }
+  .maintenance-contact { margin-top:1rem; }
+  .maintenance-footer-note { margin-top:1.25rem; color:#6c757d; font-size:0.9rem; }
+  @media (max-width:576px) { .maintenance-card { padding:1.5rem; } .maintenance-title { font-size:1.4rem; } }
+</style>
+{% endblock %}
+
+{% block content %}
+  <div class="maintenance-wrapper">
+    <div class="maintenance-card">
+      <div class="maintenance-icon" aria-hidden="true">🔧</div>
+      <h2 class="maintenance-title">El sistema está en mantenimiento</h2>
+      <p class="maintenance-lead">{{ message if message is defined and message else (settings.maintenance_message if settings and settings.maintenance_message else 'Estamos realizando tareas de mantenimiento. Volveremos en breve.') }}</p>
+      <div class="maintenance-contact">
+        <a class="btn btn-primary" href="mailto:{{ (settings.support_email if settings and settings.support_email else support_email) }}">Contactar soporte</a>
+        <a class="btn btn-outline-secondary ms-2" href="{{ url_for('main.index') }}" aria-label="Volver al portal">Volver al portal</a>
+      </div>
+      <p class="maintenance-footer-note">Solo el personal administrador puede acceder mientras dure el mantenimiento.</p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - {{ system_name }}{% endblock %}
+
+{% block head_extras %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+    <!-- Banner superior -->
+    <div class="banner">
+        <div class="banner-left">
+            <span class="icono-baner"></span>
+            <span class="notificaciones">{{ system_name }}</span>
+        </div>
+        <div class="banner-right">
+            <span class="welcome-text">Bienvenido(a)</span>
+            <span class="user-dropdown-toggle user-name" onclick="toggleUserDropdown()">{{ usuario }}</span>
+            <div class="user-dropdown" id="userDropdown">
+                <ul>
+                    {% if session.get('role') == 'admin' %}
+                      <li><a href="{{ url_for('admin.admin') }}">Panel Admin</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('main.change_password') }}">Cambiar contraseña</a></li>
+                    <li><a href="{{ url_for('main.logout') }}">Cerrar sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Barra de menú con búsqueda -->
+    <div class="menu-bar">
+        <ul class="menu-list">
+            <li class="{{ 'active' if request.path == url_for('main.home') else '' }}"><a href="{{ url_for('main.home') }}">Inicio</a></li>
+            <li class="{{ 'active' if request.path == url_for('main.grupos') else '' }}"><a href="{{ url_for('main.grupos') }}">Grupos</a></li>
+            <li class="{{ 'active' if request.path == url_for('main.notificaciones') else '' }}"><a href="{{ url_for('main.notificaciones') }}">Notificaciones</a></li>
+            <li class="{{ 'active' if request.path == url_for('main.redactar') else '' }}"><a href="{{ url_for('main.redactar') }}">Redactar</a></li>
+            <li class="{{ 'active' if request.path == url_for('main.ayuda') else '' }}"><a href="{{ url_for('main.ayuda') }}">Ayuda</a></li>
+             <!-- Apartado de búsqueda: se posiciona a la derecha -->
+             <li class="menu-search">
+                 <form onsubmit="return false;">
+                     <input id="searchInput" type="text" placeholder="Buscar">
+                 </form>
+             </li>
+         </ul>
+     </div>
+    
+
+  <!-- Panel de Envios con mensajes de prueba -->
+  <div class="panel-envios">
+    <div class="panel-header">
+      <span class="icono-envios"></span>
+      <span class="panel-title">ENVIOS</span>
+    </div>
+    <div class="panel-content">
+      <ul id="enviosList" class="mensajes-list">
+         {% for msg in messages %}
+            <strong>{{ msg.asunto }}</strong>
+            <br>{{ msg.contenido }}<br>
+         {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

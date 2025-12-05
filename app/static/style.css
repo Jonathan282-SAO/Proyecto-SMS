@@ -1,0 +1,22 @@
+/* Estilos globales mínimos para layout consistente */
+:root{
+  --primary-color: #3498db;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+/* El contenedor principal debe crecer para empujar el footer */
+.content {
+  flex: 1 0 auto;
+}
+/* Por si alguna plantilla no incluye el estilo de footer */
+.footer {
+  margin-top: auto;
+}

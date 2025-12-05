@@ -1,0 +1,305 @@
+/* Estilos Globales      */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Header (para .header y #main-header)*/
+.header,
+#main-header {
+  background-color: #000068; /* Cambiado */
+  color: #FFFFFF;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* Fija la altura del header */
+  z-index: 1001; /* Mayor que la sidebar */
+  box-sizing: border-box;
+}
+
+.header .logo,
+#main-header .logo {
+  display: flex;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+  height: 60px;
+}
+
+.header .logo img,
+#main-header .logo img {
+  height: 40px;
+  margin-right: 10px;
+  max-height: 40px;
+  width: auto;
+  display: block;
+}
+
+/* Sidebar (ajustado) */
+.sidebar,
+#sidebar {
+  width: 220px;
+  /* use full viewport height and allow sticky behavior instead of fixed
+     so the sidebar doesn't create an empty gap when the navbar scrolls away */
+  min-height: 100vh;
+  background-color: #000068; /* Cambiado */
+  position: sticky;
+  top: 0; /* stick to top of viewport; works correctly when navbar is in flow */
+  left: 0;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.sidebar ul,
+#sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar ul li,
+#sidebar ul li {
+  padding: 15px 20px;
+  color: #ffffff;
+}
+
+.sidebar ul li:hover,
+#sidebar ul li:hover,
+.sidebar ul li.active,
+#sidebar ul li.active {
+  background-color: #1A2734;
+}
+
+.sidebar ul li a,
+#sidebar ul li a {
+  color: #ffffff;
+  display: block;
+}
+
+/* Estilos de mejora para admin sin cambiar colores existentes */
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.03) inset;
+}
+
+.sidebar .nav-link {
+  color: #495057;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.25rem;
+}
+.sidebar .nav-link.active {
+  background: rgba(0,0,0,0.03);
+  font-weight: 600;
+}
+
+/* Main content spacing */
+main.container-fluid {
+  max-width: 1200px;
+}
+
+/* Cards: más aire y sombras sutiles */
+.card {
+  border: 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 6px 18px rgba(18,38,63,0.04);
+}
+
+/* Tablas: mejor separación y acciones alineadas */
+.table td, .table th {
+  vertical-align: middle;
+}
+.table .acciones > * {
+  margin-left: 0.35rem;
+}
+
+/* Botones pequeños coherentes */
+.btn-sm {
+  padding: .25rem .5rem;
+  font-size: .85rem;
+}
+
+/* Mejor separación en títulos y breadcrumbs */
+h2 {
+  margin-bottom: 0.75rem;
+}
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+/* Área de Contenido
+   Se utiliza para .main-content, #content o .admin-main*/
+.main-content,
+#content,
+.admin-main {
+  margin-left: 220px;
+  padding: 20px;
+  margin-top: 0; /* navbar is in normal flow in admin_base, avoid extra top margin */
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+/* Tarjetas y secciones de resumen (Dashboard / Reportes) */
+.dashboard-card,
+.card,
+.report-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Formularios*/
+form {
+  margin-top: 20px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form textarea,
+form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+form button,
+.btn-submit {
+  background-color: #1A2734;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+form button:hover,
+.btn-submit:hover {
+  background-color: #163549;
+}
+
+/*  Footer (para .footer y #main-footer) */
+.footer,
+#main-footer {
+  background-color: #000068; /* Cambiado */
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 220px;
+  right: 0;
+  font-size: 14px;
+}
+
+/* Contenedores Generales para Nuevos Templates*/
+#container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-container {
+  display: flex;
+  flex: 1;
+}
+
+/* Tabla de campañas */
+.campaigns-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 25px 0;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.07);
+}
+
+.campaigns-table th, .campaigns-table td {
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.campaigns-table th {
+  background-color: #000068;
+  color: #fff;
+  font-weight: bold;
+  border-bottom: 2px solid #1A2734;
+}
+
+.campaigns-table tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.campaigns-table tr:last-child {
+  border-bottom: none;
+}
+
+.campaigns-table td {
+  color: #222;
+}
+
+.campaigns-table td .action-link {
+  color: #000068;
+  margin-right: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.campaigns-table td .action-link:last-child {
+  margin-right: 0;
+}
+
+.campaigns-table tr:hover {
+  background-color: #f4f4fa;
+}
+
+/* Responsive Ajustes    */
+@media (max-width: 768px) {
+  #sidebar,
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .main-content,
+  #content,
+  .admin-main {
+    margin-left: 0;
+    margin-top: 60px;
+  }
+  #main-footer,
+  .footer {
+    left: 0;
+  }
+}
